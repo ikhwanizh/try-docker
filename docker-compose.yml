@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  php-apache-environment:
+    build: 
+      context: './build/php'
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/var/www/html
+    container_name: php-apache
+    depends_on:
+      - db
+    ports:
+      - 8000:80
+  db:
+    container_name: db
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: mylibrary
+      MYSQL_USER: MYSQL_USER
+      MYSQL_PASSWORD: MYSQL_PASSWORD
+    ports:
+      - "9906:3306"
+    build: './build/mysql'
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+        - '8080:80'
+    restart: always
+    environment:
+        PMA_HOST: db
+    depends_on:
+        - db
